@@ -1,0 +1,16 @@
+cat << EOF
+kind: Pod
+apiVersion: v1
+metadata:
+  generateName: test-
+spec:
+  restartPolicy: Never
+  containers:
+  - name: default
+    image: alpine:edge
+    command: ["sh", "-c", $(cat test.sh | ruby -r json -e 'puts STDIN.read.to_json')]
+  - name: postgres
+    image: postgres:9.6.0
+  - name: elasticsearch
+    image: elasticsearch:1.7.5
+EOF

@@ -1,0 +1,24 @@
+image=127.0.0.1:30015/tobstarr/k8s-cd-test:e8655e27
+
+cat << EOF
+kind: Pod
+apiVersion: v1
+metadata:
+  generateName: test-integration-
+spec:
+  restartPolicy: Never
+  volumes:
+  - name: kubectl
+    hostPath:
+      path: /usr/bin/kubectl
+  containers:
+  - name: default
+    image: ${image}
+    env:
+    - name: RUN_INTEGRATION_TESTS
+      value: "true"
+  - name: app
+    image: ${image}
+  - name: selenium
+    image: selenium/standalone-chrome:2.53.0
+EOF

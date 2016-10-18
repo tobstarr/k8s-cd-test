@@ -1,0 +1,24 @@
+cat <<EOF
+kind: Pod
+apiVersion: v1
+metadata:
+  generateName: build-
+spec:
+  restartPolicy: OnFailure
+  volumes:
+  - name: docker
+    hostPath:
+      path: /usr/bin/docker
+  - name: docker-socket
+    hostPath:
+      path: /var/run/docker.sock
+  containers:
+  - name: default
+    image: alpine:edge
+    command: ["sh", "-c", $(cat build.sh | ruby -r json -e 'puts STDIN.read.to_json')]
+    volumeMounts:
+    - name: docker
+      mountPath: /usr/bin/docker
+    - name: docker-socket
+      mountPath: /var/run/docker.sock
+EOF
