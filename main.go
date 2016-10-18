@@ -10,12 +10,16 @@ import (
 
 func main() {
 	l := log.New(os.Stderr, "", 0)
-	if err := run(l); err != nil {
+	var cmd func(Logger) error = run
+	if os.Getenv("RUN_INTEGRATION_TESTS") == "true" {
+		cmd = integrationTests
+	}
+	if err := cmd(l); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func run(l *log.Logger) error {
+func run(l Logger) error {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3000"

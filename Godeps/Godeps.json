@@ -15,6 +15,11 @@
 			"ImportPath": "github.com/lib/pq/oid",
 			"Comment": "go1.0-cutoff-117-g50761b0",
 			"Rev": "50761b0867bd1d9d069276790bcd4a3bccf2324a"
+		},
+		{
+			"ImportPath": "sourcegraph.com/sourcegraph/go-selenium",
+			"Comment": "0.2.2-88-g78feb0e",
+			"Rev": "78feb0e174a0a753c417f38839ca3937a7c1fac0"
 		}
 	]
 }
