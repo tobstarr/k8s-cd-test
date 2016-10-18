@@ -11,10 +11,9 @@ import (
 )
 
 func integrationTests(l Logger) error {
-
+	l = newLogger(timed)
 	appURL := "http://127.0.0.1:3000"
 	seleniumURL := "http://localhost:4444/wd/hub"
-
 	for _, u := range []string{appURL, seleniumURL} {
 		check := func(s string) func() (bool, error) {
 			return func() (bool, error) {
@@ -36,7 +35,6 @@ func integrationTests(l Logger) error {
 		}
 		l.Printf("%s available", u)
 	}
-	l = newLogger(timed)
 	caps := selenium.Capabilities(map[string]interface{}{"browserName": "chrome"})
 	selenium.Log = log.New(ioutil.Discard, "", 0)
 	d, err := selenium.NewRemote(caps, seleniumURL)
