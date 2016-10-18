@@ -3,7 +3,7 @@ package main
 import "testing"
 
 func TestDatabase(t *testing.T) {
-	con, err := connect("postgres://localhost/k8s_cd_test?sslmode=disable")
+	con, err := connect("postgres://postgres@localhost/k8s_cd_test?sslmode=disable")
 	if err != nil {
 		t.Fatal(err)
 	}
