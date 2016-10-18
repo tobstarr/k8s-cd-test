@@ -86,5 +86,4 @@ func cleanupIndex(url, index string) error {
 		return fmt.Errorf("got status %s but expected 2x. body=%s", rsp.Status, string(b))
 	}
 	return nil
-
 }
