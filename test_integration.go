@@ -4,21 +4,48 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
+	"time"
 
 	selenium "sourcegraph.com/sourcegraph/go-selenium"
 )
 
 func integrationTests(l Logger) error {
+
+	appURL := "http://127.0.0.1:3000"
+	seleniumURL := "http://localhost:4444/wd/hub"
+
+	for _, u := range []string{appURL, seleniumURL} {
+		check := func(s string) func() (bool, error) {
+			return func() (bool, error) {
+				rsp, err := http.Get(s)
+				if err != nil {
+					return false, err
+				}
+				defer rsp.Body.Close()
+				if rsp.Status[0] != '2' {
+					b, _ := ioutil.ReadAll(rsp.Body)
+					return false, fmt.Errorf("got status %s but expected 2x. body=%s", rsp.Status, string(b))
+				}
+				return true, nil
+			}
+		}(u)
+		err := waitFor(1*time.Second, 5*time.Minute, check)
+		if err != nil {
+			return fmt.Errorf("error pinging %s: %s", u, err)
+		}
+		l.Printf("%s available", u)
+	}
 	l = newLogger(timed)
 	caps := selenium.Capabilities(map[string]interface{}{"browserName": "chrome"})
 	selenium.Log = log.New(ioutil.Discard, "", 0)
-	d, err := selenium.NewRemote(caps, "http://localhost:4444/wd/hub")
+	d, err := selenium.NewRemote(caps, seleniumURL)
 	if err != nil {
 		return err
 	}
 	defer d.Close()
 
-	err = d.Get("http://127.0.0.1:3000")
+	err = d.Get(appURL)
 	if err != nil {
 		return err
 	}
@@ -48,4 +75,22 @@ func integrationTests(l Logger) error {
 	}
 	l.Printf("found element with txt=%q", txt)
 	return nil
+}
+
+func waitFor(waitDur, timeoutDur time.Duration, f func() (bool, error)) error {
+	tick := time.Tick(waitDur)
+	timeout := time.After(timeoutDur)
+	for {
+		select {
+		case <-timeout:
+			return fmt.Errorf("timeout")
+		case <-tick:
+			ok, err := f()
+			if err != nil {
+				return err
+			} else if ok {
+				return nil
+			}
+		}
+	}
 }
