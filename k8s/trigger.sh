@@ -18,7 +18,7 @@ echo started container $id
 
 while true; do
   phase=$(kubectl get pods/${id} -o json | jq '.status.phase' -c -r)
-  if [[ $phase == "Pending" ]]; then
+  if [[ -z $phase || $phase == "Pending" ]]; then
     sleep 0.1
     continue
   fi

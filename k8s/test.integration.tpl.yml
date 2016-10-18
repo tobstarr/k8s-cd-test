@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 image=127.0.0.1:30015/tobstarr/k8s-cd-test:e8655e27
 
 cat << EOF
