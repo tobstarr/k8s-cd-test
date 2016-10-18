@@ -7,3 +7,5 @@ COPY . /go/src/github.com/tobstarr/k8s-cd-test
 
 RUN cd /go/src/github.com/tobstarr/k8s-cd-test && \
     go build -o /usr/bin/k8s-cd-test
+
+ENTRYPOINT ["/usr/bin/k8s-cd-test"]
