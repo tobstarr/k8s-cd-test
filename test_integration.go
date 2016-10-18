@@ -23,7 +23,6 @@ func integrationTests(l Logger) error {
 				}
 				defer rsp.Body.Close()
 				if rsp.Status[0] != '2' {
-					b, _ := ioutil.ReadAll(rsp.Body)
 					return false, nil
 				}
 				return true, nil
