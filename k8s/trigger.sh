@@ -17,6 +17,15 @@ id=$(bash $file | kubectl create -f - | cut -d '"' -f 2)
 echo started container $id
 
 while true; do
+  phase=$(kubectl get pods/${id} -o json | jq '.status.phase' -c -r)
+  if [[ $phase == "Pending" ]]; then
+    sleep 0.1
+    continue
+  fi
+  break
+done
+
+while true; do
 	if kubectl logs -f pod/${id} -c default 2> /dev/null; then
 		break
 	fi
