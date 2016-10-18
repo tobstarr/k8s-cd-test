@@ -19,12 +19,12 @@ func integrationTests(l Logger) error {
 			return func() (bool, error) {
 				rsp, err := http.Get(s)
 				if err != nil {
-					return false, err
+					return false, nil
 				}
 				defer rsp.Body.Close()
 				if rsp.Status[0] != '2' {
 					b, _ := ioutil.ReadAll(rsp.Body)
-					return false, fmt.Errorf("got status %s but expected 2x. body=%s", rsp.Status, string(b))
+					return false, nil
 				}
 				return true, nil
 			}
