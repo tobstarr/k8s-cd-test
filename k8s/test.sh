@@ -11,7 +11,7 @@ function wait_for_port {
   if [[ -z $port ]]; then
     abort "USAGE: port"
   fi
-  for i in $(seq 1 300); do
+  for i in $(seq 1 3000); do
     if echo exit | nc localhost $port; then
       return
     fi
@@ -25,7 +25,7 @@ function wait_for_http {
   if [[ -z $addr ]]; then
     abort "USAGE: address"
   fi
-  for i in $(seq 1 300); do
+  for i in $(seq 1 3000); do
     if curl -o /dev/null -sIf $addr; then
       return
     fi
